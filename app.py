@@ -8,7 +8,7 @@ model, encoder = load("ML_models/best_model.joblib")
 
 st.title("🩺 AI Disease Predictor")
 
-# ✅ Load ALL features from dataset (ensures 132 features)
+#Load ALL features from dataset (ensures 132 features)
 df = pd.read_csv("dataset/training_data.csv")
 df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
@@ -27,7 +27,7 @@ for i, symptom in enumerate(all_symptoms):
         if st.checkbox(symptom):
             selected_symptoms.append(symptom)
 
-# ✅ Build FULL 132-length input vector
+#Build FULL 132-length input vector
 input_data = [1 if symptom in selected_symptoms else 0 for symptom in all_symptoms]
 
 input_array = np.array(input_data).reshape(1, -1)
