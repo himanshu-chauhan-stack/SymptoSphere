@@ -6,7 +6,7 @@ from joblib import load
 # Load model
 model, encoder = load("ML_models/best_model.joblib")
 
-st.title("🩺 AI Disease Predictor")
+st.title("AI Disease Prediction Model")
 
 #Load ALL features from dataset (ensures 132 features)
 df = pd.read_csv("dataset/training_data.csv")
@@ -14,9 +14,9 @@ df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
 all_symptoms = df.drop("prognosis", axis=1).columns.tolist()
 
-st.write(f"Total Symptoms Loaded: {len(all_symptoms)}")  # DEBUG
+st.write(f"Total Numbers of Symptoms identified: {len(all_symptoms)}")  # DEBUG
 
-st.write("Select your symptoms:")
+st.write("Please Select your symptoms:")
 
 # Create checkboxes
 selected_symptoms = []
