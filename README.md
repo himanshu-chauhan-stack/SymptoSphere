@@ -28,26 +28,18 @@ The system returns the top three probable diseases along with confidence scores 
 ## Project Structure
 project/
 │
-# Streamlit UI
-├── app.py 
-# Model training and comparison
-├── main.py 
-# Saved model
-├── ML_models/ 
+├── app.py # Streamlit UI
+├── main.py # Model training and comparison
+├── ML_models/ # Saved model
 │ └── best_model.joblib
-# Training and test data
-├── dataset/ 
+├── dataset/ # Training and test data
 ├── utils/
-  # Data cleaning and encoding
-│ ├── preprocessing.py 
-  # Prediction logic
-│ └── prediction.py 
-# Graphs and images
-├── assets/ 
+│ ├── preprocessing.py  # Data cleaning and encoding
+│ └── prediction.py # Prediction logic
+├── assets/ # Graphs and images
 │ ├── feature_importance.png
 │ └── model_comparison.png
-# Dependencies
-├── requirements.txt 
+├── requirements.txt #Dependencies
 └── README.md
 
 ---
