@@ -115,7 +115,7 @@ Typhoid : 78.45%
 To deploy using Streamlit Cloud:
 
 1. Push your code to GitHub  
-2. Go to https://streamlit.io/cloud  
+2. Go to [https://streamlit.io/cloud ](https://symptosphere-404avinotfound.streamlit.app/) 
 3. Select your repository  
 4. Set the main file as:
 
