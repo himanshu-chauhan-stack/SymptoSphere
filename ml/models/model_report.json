@@ -12,18 +12,6 @@
     "test_accuracy": 1.0
   },
   {
-    "model": "XGBoost",
-    "cv_accuracy": 1.0,
-    "cv_std": 0.0,
-    "test_accuracy": 0.9761904761904762
-  },
-  {
-    "model": "LightGBM",
-    "cv_accuracy": 1.0,
-    "cv_std": 0.0,
-    "test_accuracy": 0.9761904761904762
-  },
-  {
     "model": "Random Forest",
     "cv_accuracy": 1.0,
     "cv_std": 0.0,
@@ -31,6 +19,18 @@
   },
   {
     "model": "Decision Tree",
+    "cv_accuracy": 1.0,
+    "cv_std": 0.0,
+    "test_accuracy": 0.9761904761904762
+  },
+  {
+    "model": "XGBoost",
+    "cv_accuracy": 1.0,
+    "cv_std": 0.0,
+    "test_accuracy": 0.9761904761904762
+  },
+  {
+    "model": "LightGBM",
     "cv_accuracy": 1.0,
     "cv_std": 0.0,
     "test_accuracy": 0.9761904761904762

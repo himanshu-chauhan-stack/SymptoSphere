@@ -7,7 +7,6 @@ from typing import Any
 
 import joblib
 import pandas as pd
-from lightgbm import LGBMClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold, cross_val_score
@@ -15,7 +14,6 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
-from xgboost import XGBClassifier
 
 warnings.filterwarnings("ignore")
 
@@ -57,25 +55,8 @@ def _prepare_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series, L
 
 
 def _build_models(random_state: int) -> dict[str, Any]:
-    return {
-        "XGBoost": XGBClassifier(
-            use_label_encoder=False,
-            eval_metric="mlogloss",
-            n_estimators=250,
-            learning_rate=0.05,
-            max_depth=6,
-            subsample=0.9,
-            colsample_bytree=0.9,
-            random_state=random_state,
-            n_jobs=1,
-        ),
+    models: dict[str, Any] = {
         "SVM": SVC(probability=True, C=3.0, gamma="scale", kernel="rbf"),
-        "LightGBM": LGBMClassifier(
-            n_estimators=250,
-            learning_rate=0.05,
-            random_state=random_state,
-            verbose=-1,
-        ),
         "Random Forest": RandomForestClassifier(
             n_estimators=350,
             random_state=random_state,
@@ -85,6 +66,38 @@ def _build_models(random_state: int) -> dict[str, Any]:
         "Naive Bayes": GaussianNB(),
     }
 
+    # Optional advanced models are loaded only during training runs.
+    try:
+        from xgboost import XGBClassifier
+
+        models["XGBoost"] = XGBClassifier(
+            use_label_encoder=False,
+            eval_metric="mlogloss",
+            n_estimators=250,
+            learning_rate=0.05,
+            max_depth=6,
+            subsample=0.9,
+            colsample_bytree=0.9,
+            random_state=random_state,
+            n_jobs=1,
+        )
+    except Exception:
+        pass
+
+    try:
+        from lightgbm import LGBMClassifier
+
+        models["LightGBM"] = LGBMClassifier(
+            n_estimators=250,
+            learning_rate=0.05,
+            random_state=random_state,
+            verbose=-1,
+        )
+    except Exception:
+        pass
+
+    return models
+
 
 def train_and_save_models(random_state: int = 42) -> dict[str, Any]:
     """Train all models, select the best via cross-validation, and persist the bundle."""
@@ -93,7 +106,6 @@ def train_and_save_models(random_state: int = 42) -> dict[str, Any]:
     models = _build_models(random_state=random_state)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=random_state)
 
-    trained_models: dict[str, Any] = {}
     model_scores: list[dict[str, float | str]] = []
 
     for model_name, model in models.items():
@@ -102,7 +114,6 @@ def train_and_save_models(random_state: int = 42) -> dict[str, Any]:
         test_predictions = model.predict(x_test)
         test_accuracy = accuracy_score(y_test, test_predictions)
 
-        trained_models[model_name] = model
         model_scores.append(
             {
                 "model": model_name,
@@ -118,7 +129,7 @@ def train_and_save_models(random_state: int = 42) -> dict[str, Any]:
         reverse=True,
     )
     best_model_name = str(ranked_scores[0]["model"])
-    best_model = trained_models[best_model_name]
+    best_model = models[best_model_name]
 
     selection_reason = (
         f"{best_model_name} selected - highest 5-fold cross-validation accuracy: "
@@ -128,8 +139,8 @@ def train_and_save_models(random_state: int = 42) -> dict[str, Any]:
     bundle = {
         "best_model": best_model,
         "best_model_name": best_model_name,
-        "models": trained_models,
         "model_scores": ranked_scores,
+        "models_available": [row["model"] for row in ranked_scores],
         "encoder": encoder,
         "feature_names": list(x_train.columns),
         "selection_reason": selection_reason,
@@ -158,7 +169,6 @@ def build_bundle_from_legacy_model() -> dict[str, Any]:
     bundle = {
         "best_model": best_model,
         "best_model_name": "Legacy Best Model",
-        "models": {"Legacy Best Model": best_model},
         "model_scores": [
             {
                 "model": "Legacy Best Model",
@@ -167,6 +177,7 @@ def build_bundle_from_legacy_model() -> dict[str, Any]:
                 "test_accuracy": 0.0,
             }
         ],
+        "models_available": ["Legacy Best Model"],
         "encoder": encoder,
         "feature_names": feature_names,
         "selection_reason": "Legacy model loaded because full retraining was unavailable.",

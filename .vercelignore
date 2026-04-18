@@ -1,0 +1,12 @@
+# Ignore local and training-only artifacts for Vercel deployments
+.venv/
+__pycache__/
+*.pyc
+
+# Legacy/training-only resources not required in production inference runtime
+ML_models/
+dataset/
+assets/
+utils/
+train.py
+runtime.txt

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
 from pathlib import Path
 from typing import Any
@@ -13,7 +14,21 @@ from .disease_data import (
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DB_PATH = Path(__file__).resolve().parent / "sympthosphere.db"
+
+
+def _resolve_default_db_path() -> Path:
+    env_override = os.getenv("DATABASE_PATH")
+    if env_override:
+        return Path(env_override)
+
+    # Vercel/Lambda file systems are read-only except /tmp.
+    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+        return Path("/tmp/sympthosphere.db")
+
+    return Path(__file__).resolve().parent / "sympthosphere.db"
+
+
+DB_PATH = _resolve_default_db_path()
 
 
 def _connect(db_path: Path = DB_PATH) -> sqlite3.Connection:

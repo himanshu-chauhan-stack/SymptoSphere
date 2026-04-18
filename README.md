@@ -1,156 +1,84 @@
-# SymptoSphere 
-Intelligent Disease Prediction System using Machine Learning
+# SymptoSphere
 
-Go to https://symptosphere-404avinotfound.streamlit.app/
----
+SymptoSphere is an AI-powered disease prediction web app built with Flask, custom frontend UI, SQLite, and a multi-model ML pipeline.
 
-## Overview
+## Highlights
 
-SymptoSphere is a machine learning-based web application that predicts diseases based on user-selected symptoms. It uses multiple advanced models and automatically selects the best-performing model to provide accurate predictions.
+- Flask backend with Jinja2 templates
+- Modern responsive UI (no Bootstrap)
+- Symptom-based prediction with top 3 diseases and confidence bars
+- Multi-model comparison table with best-model selection reason
+- Treatment panel: overview, medicines, home remedies, precautions, urgency level
+- AI doctor recommendation cards with fictional doctor personas
+- Multilingual interface (English + Hindi) with no page reload
+- SQLite-backed disease and doctor mapping data
 
-The system returns the top three probable diseases along with confidence scores through an interactive user interface built with Streamlit.
+## Tech Stack
 
----
+- Backend: Flask, Python
+- ML: scikit-learn, joblib
+- Database: SQLite
+- Frontend: HTML, CSS, JavaScript
+- Deployment Target: Vercel
 
-## Features
+## Local Run
 
-- Symptom-based disease prediction  
-- Multi-model system (XGBoost, SVM, LightGBM)  
-- Automatic best model selection  
-- Model comparison visualization  
-- Data preprocessing and label encoding  
-- Interactive Streamlit UI with checkbox input  
-- Top-3 predictions with probability scores  
-- Modular and scalable project structure  
+1. Install runtime dependencies:
 
----
-
-## Project Structure
-project/
-│
-├── app.py # Streamlit UI
-├── main.py # Model training and comparison
-├── ML_models/ # Saved model
-│ └── best_model.joblib
-├── dataset/ # Training and test data
-├── utils/
-│ ├── preprocessing.py  # Data cleaning and encoding
-│ └── prediction.py # Prediction logic
-├── assets/ # Graphs and images
-│ ├── feature_importance.png
-│ └── model_comparison.png
-├── requirements.txt #Dependencies
-└── README.md
-
----
-
-## Installation
-
-### 1. Clone the repository
-git clone https://github.com/404avinotfound/SymptoSphere.git
-
-cd SymptoSphere
----
-
-### 2. Install dependencies
+```bash
 pip install -r requirements.txt
+```
 
+2. Start the app:
 
----
+```bash
+python app.py
+```
 
-## Train the Model
+3. Open:
 
-Run the following command:
+```text
+http://127.0.0.1:5000
+```
 
+## Optional Model Retraining
 
+If you want to retrain with all optional ML trainers locally:
+
+```bash
+pip install -r requirements-train.txt
 python train.py
+```
 
+## Deploy on Vercel
 
-This will:
-- Train multiple models  
-- Select the best model  
-- Save it in `ML_models/best_model.joblib`  
-- Generate a model comparison graph  
+This repository is already prepared for Vercel with:
 
----
+- `api/index.py` (serverless WSGI entrypoint)
+- `vercel.json` (routing config)
+- `.vercelignore` (excludes training-only files)
 
-## Run the Application
+### Option A: Vercel Dashboard (Recommended)
 
+1. Push this repo to GitHub.
+2. Open Vercel and click `Add New Project`.
+3. Import `himanshu-chauhan-stack/SymptoSphere`.
+4. Keep default build settings.
+5. Deploy.
 
-python -m streamlit run app.py
+### Option B: Vercel CLI
 
----
+```bash
+npm i -g vercel
+vercel login
+vercel --prod
+```
 
-## How It Works
+### Notes for Vercel Runtime
 
-1. User selects symptoms through the interface  
-2. Input is converted into a feature vector  
-3. The trained model predicts probabilities  
-4. Top three diseases are displayed with confidence scores  
-
----
-
-## Models Used
-
-- XGBoost  
-- Support Vector Machine (SVM)  
-- LightGBM  
-
-The best model is selected automatically based on validation accuracy.
-
----
-
-## Example Output
-
-
-Top Predictions:
-Dengue : 92.34%
-Malaria : 85.12%
-Typhoid : 78.45%
-
-
----
-
-## Deployment
-
-To deploy using Streamlit Cloud:
-
-1. Push your code to GitHub  
-2. Go to https://symptosphere-404avinotfound.streamlit.app/
-3. Select your repository  
-4. Set the main file as:
-
-
-app.py
-
-
----
-
-## Technologies Used
-
-- Python  
-- Pandas  
-- NumPy  
-- Scikit-learn  
-- XGBoost  
-- LightGBM  
-- Streamlit  
-- Matplotlib  
-- Joblib  
-
----
-
-## Objective
-
-To develop a practical machine learning application that demonstrates disease prediction using symptom data and provides an intuitive user interface for interaction.
-
----
-
-## Disclaimer
-
-This project is intended for educational purposes only and should not be used as a substitute for professional medical advice.
-
----
+- SQLite runs from writable `/tmp` automatically in serverless mode.
+- Inference uses the bundled lightweight model artifact in `ml/models/model_bundle.joblib`.
+- You can optionally set `SECRET_KEY` in Vercel project environment variables.
 
 ## Team / Creator
 
@@ -158,17 +86,6 @@ This project is intended for educational purposes only and should not be used as
 - Avishhoray Raj
 - Nihal Kumar
 
----
+## Disclaimer
 
-## Future Improvements
-
-- Symptom severity input (scaled values)  
-- Doctor recommendation system  
-- Natural language symptom input  
-- Improved UI design and responsiveness  
-
----
-
-## License
-
-This project is open-source and available for educational use.
+SymptoSphere is an educational AI tool. It does not replace professional medical advice.

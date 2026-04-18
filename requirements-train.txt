@@ -1,0 +1,8 @@
+# Optional training-only dependencies.
+# Use this when running full multi-model training locally.
+
+-r requirements.txt
+xgboost>=2.0,<4.0
+lightgbm>=4.0,<5.0
+matplotlib>=3.8,<4.0
+seaborn>=0.13,<1.0
