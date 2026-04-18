@@ -152,10 +152,11 @@ This project is intended for educational purposes only and should not be used as
 
 ---
 
-## Author
+## Team / Creator
 
-404avinotfound  
-B.Tech CSE Student  
+- Himanshu Chauhan
+- Avishhoray Raj
+- Nihal Kumar
 
 ---
 

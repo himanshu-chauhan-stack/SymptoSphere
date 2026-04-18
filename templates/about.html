@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="about-shell reveal-up">
+    <h1 data-i18n-key="about_title">About SymptoSphere</h1>
+    <p data-i18n-key="about_intro">
+        SymptoSphere is a full-stack educational medical intelligence platform that predicts likely diseases from symptoms using multiple machine learning models.
+    </p>
+
+    <div class="about-grid">
+        <article class="about-card">
+            <h2 data-i18n-key="about_project_title">Project Overview</h2>
+            <p data-i18n-key="about_project_body">
+                The system compares several models, selects the highest performer, and presents top predictions with confidence scores, treatment context, and specialist recommendations.
+            </p>
+        </article>
+
+        <article class="about-card">
+            <h2 data-i18n-key="about_team_title">Team / Creator</h2>
+            <ul class="team-list">
+                <li>Himanshu Chauhan</li>
+                <li>Avishhoray Raj</li>
+                <li>Nihal Kumar</li>
+            </ul>
+        </article>
+
+        <article class="about-card">
+            <h2 data-i18n-key="about_stack_title">Technology Stack</h2>
+            <ul>
+                <li>Flask + Jinja2</li>
+                <li>Scikit-learn, XGBoost, LightGBM</li>
+                <li>SQLite Database</li>
+                <li>HTML, CSS, JavaScript (Custom UI)</li>
+            </ul>
+        </article>
+
+        <article class="about-card">
+            <h2 data-i18n-key="about_repo_title">GitHub Repository</h2>
+            <a href="https://github.com/himanshu-chauhan-stack/SymptoSphere" target="_blank" rel="noopener noreferrer">
+                https://github.com/himanshu-chauhan-stack/SymptoSphere
+            </a>
+        </article>
+    </div>
+</section>
+{% endblock %}

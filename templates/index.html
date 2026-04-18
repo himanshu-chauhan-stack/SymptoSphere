@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-grid">
+    <div class="hero-content reveal-up">
+        <p class="hero-kicker" data-i18n-key="hero_kicker">FUTURISTIC MEDICAL INTELLIGENCE</p>
+        <h1 data-i18n-key="hero_title">AI-Powered Disease Prediction</h1>
+        <p class="hero-subtitle" data-i18n-key="hero_subtitle">
+            Enter your symptoms and let our multi-model intelligence engine estimate likely conditions in seconds.
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="{{ url_for('predict') }}" data-i18n-key="hero_cta_primary">Start Symptom Analysis</a>
+            <a class="btn btn-ghost" href="{{ url_for('about') }}" data-i18n-key="hero_cta_secondary">Learn About the Project</a>
+        </div>
+    </div>
+    <div class="hero-visual reveal-up-delay">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring second"></div>
+        <div class="center-core">
+            <span>AI</span>
+        </div>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-card reveal-up" style="--delay: 0.05s;">
+        <h3 class="counter" data-counter-target="{{ stats.symptom_count }}">0</h3>
+        <p data-i18n-key="stats_symptoms" data-count="{{ stats.symptom_count }}">132 Symptoms Analyzed</p>
+    </article>
+    <article class="stat-card reveal-up" style="--delay: 0.1s;">
+        <h3 class="counter" data-counter-target="{{ stats.disease_count }}">0</h3>
+        <p data-i18n-key="stats_diseases" data-count="{{ stats.disease_count }}">40+ Diseases Detected</p>
+    </article>
+    <article class="stat-card reveal-up" style="--delay: 0.15s;">
+        <h3 class="counter" data-counter-target="{{ stats.top_accuracy|round|int }}">0</h3>
+        <p data-i18n-key="stats_accuracy" data-accuracy="{{ '%.2f'|format(stats.top_accuracy) }}">97%+ Model Accuracy</p>
+    </article>
+</section>
+
+<section class="flow-section">
+    <h2 data-i18n-key="how_it_works_title">How It Works</h2>
+    <div class="flow-grid">
+        <article class="flow-card reveal-up" style="--delay: 0.05s;">
+            <div class="step-no">01</div>
+            <h3 data-i18n-key="step_one_title">Select Symptoms</h3>
+            <p data-i18n-key="step_one_body">Choose from 132 curated symptoms using smart search and toggle controls.</p>
+        </article>
+        <article class="flow-card reveal-up" style="--delay: 0.1s;">
+            <div class="step-no">02</div>
+            <h3 data-i18n-key="step_two_title">AI Analyzes</h3>
+            <p data-i18n-key="step_two_body">Multiple machine learning models evaluate your symptom vector in real time.</p>
+        </article>
+        <article class="flow-card reveal-up" style="--delay: 0.15s;">
+            <div class="step-no">03</div>
+            <h3 data-i18n-key="step_three_title">Get Insights</h3>
+            <p data-i18n-key="step_three_body">View top disease predictions, confidence, treatment guidance, and doctor suggestions.</p>
+        </article>
+    </div>
+</section>
+
+<section class="notice-banner reveal-up">
+    <p data-i18n-key="home_disclaimer">
+        This tool is for educational purposes only. Always consult a real doctor.
+    </p>
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SymptoSphere</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="ambient-bg" aria-hidden="true"></div>
+    <div id="particle-layer" aria-hidden="true"></div>
+
+    <header class="main-header">
+        <div class="container nav-shell">
+            <a class="logo" href="{{ url_for('index') }}">SymptoSphere</a>
+            <nav class="navbar" aria-label="Main Navigation">
+                <a href="{{ url_for('index') }}" data-nav="home" data-i18n-key="nav_home">Home</a>
+                <a href="{{ url_for('predict') }}" data-nav="predict" data-i18n-key="nav_predict">Predict</a>
+                <a href="{{ url_for('about') }}" data-nav="about" data-i18n-key="nav_about">About</a>
+            </nav>
+            <button id="languageToggle" class="lang-toggle" type="button" data-i18n-key="language_toggle_button">EN / HI</button>
+        </div>
+    </header>
+
+    <main class="container page-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p class="footer-disclaimer" data-i18n-key="global_disclaimer">{{ medical_disclaimer }}</p>
+            <p class="footer-meta">SymptoSphere • 2026</p>
+        </div>
+    </footer>
+
+    <div class="modal" id="appointmentModal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="appointmentModalTitle">
+            <h3 id="appointmentModalTitle" data-i18n-key="appointment_title">Feature Coming Soon</h3>
+            <p data-i18n-key="appointment_body">Online booking is coming soon. Please visit your nearest clinic for immediate care.</p>
+            <button type="button" class="btn btn-primary" id="closeModalButton" data-i18n-key="close_button">Close</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/lang.js') }}" defer></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-header reveal-up">
+    <h1 data-i18n-key="predict_title">Symptom Selection Console</h1>
+    <p data-i18n-key="predict_subtitle">Search and choose every symptom you currently notice.</p>
+</section>
+
+<form id="predictionForm" method="post" action="{{ url_for('results') }}" class="predict-form">
+    <div class="toolbar-card reveal-up" style="--delay: 0.05s;">
+        <label for="symptomSearch" data-i18n-key="search_label">Search Symptoms</label>
+        <input
+            id="symptomSearch"
+            class="search-input"
+            type="search"
+            placeholder="Type a symptom..."
+            data-i18n-placeholder="search_placeholder"
+            autocomplete="off"
+        >
+        <p class="selected-counter" id="selectedCount" data-i18n-key="selected_count" data-count="0">0 selected</p>
+    </div>
+
+    <div class="symptom-grid" id="symptomGrid">
+        {% for symptom in symptoms %}
+            <label class="symptom-toggle reveal-up" style="--delay: {{ loop.index0 * 0.002 }}s;" data-symptom-item data-search="{{ symptom|replace('_', ' ')|lower }}">
+                <input type="checkbox" class="symptom-input" name="symptoms" value="{{ symptom }}">
+                <span class="toggle-mark" aria-hidden="true"></span>
+                <span class="symptom-text" data-symptom-key="{{ symptom }}">{{ symptom|replace('_', ' ')|replace('.1', ' duplicate')|title }}</span>
+            </label>
+        {% endfor %}
+    </div>
+
+    <div class="submit-row reveal-up" style="--delay: 0.2s;">
+        <button type="submit" class="btn btn-primary big" data-i18n-key="predict_button">Predict Disease</button>
+    </div>
+</form>
+
+<div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
+    <div class="loading-card">
+        <div class="medical-cross"></div>
+        <p data-i18n-key="loading_text">Analyzing symptoms with medical AI models...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/symptoms.js') }}" defer></script>
+{% endblock %}
