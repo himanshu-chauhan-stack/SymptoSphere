@@ -1,122 +1,260 @@
 {% extends "base.html" %}
 
+{% block title %}SymptoSphere | Diagnosis Results{% endblock %}
+
 {% block content %}
-<section class="result-head reveal-up">
-    <p class="hero-kicker" data-i18n-key="results_kicker">Prediction Complete</p>
-    <h1 data-i18n-key="results_title">Top 3 Disease Predictions</h1>
-    <p class="result-reason" data-i18n-key="selected_model_reason_label">Selected Model Reason</p>
-    <div class="model-badge">
-        <strong>{{ selected_model }}</strong>
-        <span>{{ selection_reason }}</span>
-    </div>
-</section>
+{% set top_prediction = predictions[0] if predictions and predictions|length > 0 else None %}
+{% set second_prediction = predictions[1] if predictions and predictions|length > 1 else None %}
+{% set third_prediction = predictions[2] if predictions and predictions|length > 2 else None %}
+{% set top_accuracy = (model_comparison[0].cv_accuracy * 100) if model_comparison else 0 %}
+{% set urgency_slug = disease_info.urgency_level|lower|replace(' ', '-') %}
 
-<section class="prediction-grid">
-    {% for item in predictions %}
-    <article class="prediction-card reveal-up" style="--delay: {{ loop.index0 * 0.08 }}s;">
-        <div class="prediction-head">
-            <h3 data-disease-key="{{ item.disease|trim }}">{{ item.disease }}</h3>
-            <span class="confidence-percent">{{ '%.2f'|format(item.confidence) }}%</span>
-        </div>
-        <div class="confidence-track">
-            <div class="confidence-fill" style="--target-width: {{ '%.2f'|format(item.confidence) }}%;"></div>
-        </div>
-    </article>
-    {% endfor %}
-</section>
-
-<section class="model-table-wrap reveal-up">
-    <h2 data-i18n-key="comparison_title">Model Comparison</h2>
-    <div class="table-scroll">
-        <table class="model-table">
-            <thead>
-                <tr>
-                    <th data-i18n-key="comparison_model">Model</th>
-                    <th data-i18n-key="comparison_cv">CV Accuracy</th>
-                    <th data-i18n-key="comparison_test">Test Accuracy</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in model_comparison %}
-                <tr>
-                    <td>{{ row.model }}</td>
-                    <td>{{ '%.2f'|format(row.cv_accuracy * 100) }}%</td>
-                    <td>{{ '%.2f'|format(row.test_accuracy * 100) }}%</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<section class="insight-grid">
-    <article class="panel-card reveal-up" style="--delay: 0.05s;">
-        <h2 data-i18n-key="treatment_title">Treatment Panel</h2>
-        <div class="urgency-row">
-            <span data-i18n-key="urgency_label">Urgency Level</span>
-            <span class="urgency-badge urgency-{{ disease_info.urgency_level|lower }}">{{ disease_info.urgency_level }}</span>
-        </div>
-
-        <h3 data-i18n-key="overview_title">Disease Overview</h3>
-        <p>{{ disease_info.description }}</p>
-
-        <h3 data-i18n-key="medicines_title">Common Medicines</h3>
-        <ul>
-            {% for medicine in disease_info.medicines %}
-                <li>{{ medicine }}</li>
-            {% endfor %}
-        </ul>
-
-        <h3 data-i18n-key="home_remedies_title">Home Remedies</h3>
-        <ul>
-            {% for tip in disease_info.home_remedies %}
-                <li>{{ tip }}</li>
-            {% endfor %}
-        </ul>
-
-        <h3 data-i18n-key="precautions_title">Precautions</h3>
-        <ul>
-            {% for caution in disease_info.precautions %}
-                <li>{{ caution }}</li>
-            {% endfor %}
-        </ul>
-
-        <p class="micro-disclaimer" data-i18n-key="medicine_disclaimer">
-            All medicine suggestions are educational and should only be used as prescribed by a licensed doctor.
-        </p>
-    </article>
-
-    <article class="panel-card reveal-up" style="--delay: 0.1s;">
-        <h2 data-i18n-key="doctor_title">AI Doctor Recommendation</h2>
-        <div class="doctor-stack">
-            {% for doctor in doctors %}
-            <div class="doctor-card">
-                <img
-                    src="{{ url_for('static', filename='assets/doctors/' + doctor.avatar_type + '.svg') }}"
-                    alt="{{ doctor.name }}"
-                    class="doctor-avatar"
-                >
-                <div>
-                    <h3>{{ doctor.name }}</h3>
-                    <p class="doctor-meta">{{ doctor.specialization }} • {{ doctor.experience }}</p>
-                    <p class="doctor-meta">Rating: {{ doctor.rating }}/5</p>
-                    <p class="doctor-bio">{{ doctor.bio }}</p>
-                    <p class="doctor-message">{{ doctor.message }}</p>
+<section class="results-page">
+    <div class="results-layout">
+        <div class="results-left">
+            <article class="results-heading" data-reveal>
+                <span class="kicker" data-i18n="results_kicker">AI Diagnosis Results</span>
+                <h1 data-i18n="results_title">Prediction Output</h1>
+                <p class="results-tagline" data-i18n="results_subtitle">Powered by ensemble ML with confidence-ranked outputs.</p>
+                <div class="model-pill">
+                    <span data-i18n="results_model_label">Model</span>
+                    <strong>{{ selected_model }}</strong>
+                    <span class="mono">{{ '%.1f'|format(top_accuracy) }}%</span>
                 </div>
-            </div>
-            {% endfor %}
+            </article>
+
+            {% if top_prediction %}
+            <section class="predictions-panel" data-reveal>
+                <article class="prediction-card prediction-card-primary">
+                    <div class="prediction-head">
+                        <div class="prediction-rank">#1</div>
+                        <div class="prediction-confidence">{{ '%.2f'|format(top_prediction.confidence) }}%</div>
+                    </div>
+
+                    <h2 class="prediction-disease" data-disease-key="{{ top_prediction.disease }}">{{ top_prediction.disease }}</h2>
+
+                    <div class="confidence-track">
+                        <div class="confidence-fill" data-confidence="{{ '%.2f'|format(top_prediction.confidence) }}"></div>
+                    </div>
+
+                    <div class="prediction-tags">
+                        <span class="chip is-danger" data-i18n="tag_high_urgency">High Urgency</span>
+                        <span class="chip" data-i18n="tag_specialist_required">Specialist Required</span>
+                    </div>
+                </article>
+
+                <div class="prediction-sub-grid">
+                    {% if second_prediction %}
+                    <article class="prediction-card">
+                        <div class="prediction-head">
+                            <div class="prediction-rank">#2</div>
+                            <div class="prediction-confidence secondary">{{ '%.2f'|format(second_prediction.confidence) }}%</div>
+                        </div>
+                        <h3 class="prediction-disease" data-disease-key="{{ second_prediction.disease }}">{{ second_prediction.disease }}</h3>
+                        <div class="confidence-track">
+                            <div class="confidence-fill warning" data-confidence="{{ '%.2f'|format(second_prediction.confidence) }}" data-delay="130"></div>
+                        </div>
+                        <div class="prediction-tags">
+                            <span class="chip is-warning" data-i18n="tag_monitor">Monitor Closely</span>
+                        </div>
+                    </article>
+                    {% endif %}
+
+                    {% if third_prediction %}
+                    <article class="prediction-card">
+                        <div class="prediction-head">
+                            <div class="prediction-rank">#3</div>
+                            <div class="prediction-confidence secondary">{{ '%.2f'|format(third_prediction.confidence) }}%</div>
+                        </div>
+                        <h3 class="prediction-disease" data-disease-key="{{ third_prediction.disease }}">{{ third_prediction.disease }}</h3>
+                        <div class="confidence-track">
+                            <div class="confidence-fill warning" data-confidence="{{ '%.2f'|format(third_prediction.confidence) }}" data-delay="260"></div>
+                        </div>
+                        <div class="prediction-tags">
+                            <span class="chip is-warning" data-i18n="tag_monitor">Monitor Closely</span>
+                        </div>
+                    </article>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
+
+            <section class="model-compare" data-reveal>
+                <button class="model-toggle" id="modelToggle" type="button" aria-expanded="false">
+                    <span data-i18n="model_toggle_title">Why This Model Was Chosen</span>
+                    <span class="model-toggle-chevron">▼</span>
+                </button>
+
+                <div class="model-panel" id="modelPanel">
+                    <div class="model-table-wrap">
+                        <table class="model-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="table_model">Model</th>
+                                    <th data-i18n="table_accuracy">Accuracy</th>
+                                    <th data-i18n="table_status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in model_comparison %}
+                                <tr class="{% if row.model == selected_model %}is-selected{% endif %}">
+                                    <td>{{ row.model }}</td>
+                                    <td>{{ '%.2f'|format(row.cv_accuracy * 100) }}%</td>
+                                    <td>
+                                        {% if row.model == selected_model %}
+                                            <span class="status-selected" data-i18n="status_selected">Selected</span>
+                                        {% else %}
+                                            <span data-i18n="status_other">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="treatment-panel" data-reveal>
+                <h2 class="panel-title" data-i18n="treatment_title">Treatment and Care Guide</h2>
+
+                <div class="urgency-row">
+                    <span data-i18n="urgency_label">Urgency Level</span>
+                    <span class="urgency-badge {{ urgency_slug }}" data-i18n="urgency_{{ urgency_slug }}">{{ disease_info.urgency_level }}</span>
+                </div>
+
+                <div class="treatment-tabs" id="treatmentTabs">
+                    <span class="tab-indicator" id="tabIndicator" aria-hidden="true"></span>
+                    <button class="treatment-tab is-active" type="button" data-tab-target="overview" data-i18n="tab_overview">Overview</button>
+                    <button class="treatment-tab" type="button" data-tab-target="medicines" data-i18n="tab_medicines">Medicines</button>
+                    <button class="treatment-tab" type="button" data-tab-target="homecare" data-i18n="tab_homecare">Home Care</button>
+                    <button class="treatment-tab" type="button" data-tab-target="precautions" data-i18n="tab_precautions">Precautions</button>
+                </div>
+
+                <div class="treatment-content">
+                    <article class="treatment-pane is-active" data-tab-content="overview">
+                        <h3 data-disease-key="{{ disease_info.disease_name }}">{{ disease_info.disease_name }}</h3>
+                        <p>{{ disease_info.description }}</p>
+                    </article>
+
+                    <article class="treatment-pane" data-tab-content="medicines">
+                        <ul class="medicine-list">
+                            {% for medicine in disease_info.medicines %}
+                            <li class="medicine-item">
+                                <span class="medicine-pill" aria-hidden="true"></span>
+                                <div>
+                                    <strong>{{ medicine }}</strong>
+                                    <p class="u-mb-0" data-i18n="medicine_dosage_note">Dosage: As prescribed by a licensed doctor.</p>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <p class="medicine-note" data-i18n="medicine_warning">Always consult a licensed physician before taking any medicine.</p>
+                    </article>
+
+                    <article class="treatment-pane" data-tab-content="homecare">
+                        <ul class="home-care-list">
+                            {% for item in disease_info.home_remedies %}
+                            <li class="check-item">{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </article>
+
+                    <article class="treatment-pane" data-tab-content="precautions">
+                        <ul class="precaution-list">
+                            {% for item in disease_info.precautions %}
+                            <li class="cross-item">{{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                    </article>
+                </div>
+            </section>
         </div>
 
-        <button class="btn btn-primary book-appointment-btn" type="button" data-i18n-key="book_appointment">Book Appointment</button>
-    </article>
-</section>
+        <aside class="results-right">
+            <section class="doctor-panel" data-reveal>
+                <h2 class="panel-title" data-i18n="doctor_title">Recommended Specialists</h2>
+                <p data-i18n="doctor_subtitle">Based on your diagnosis, consider consulting these specialists.</p>
 
-<section class="selected-symptoms reveal-up">
-    <h2 data-i18n-key="selected_symptoms_title">Selected Symptoms</h2>
-    <div class="selected-chip-grid">
-        {% for symptom in selected_symptoms %}
-            <span class="selected-chip" data-symptom-key="{{ symptom }}">{{ symptom|replace('_', ' ')|replace('.1', ' duplicate')|title }}</span>
-        {% endfor %}
+                <div class="doctor-list">
+                    {% if doctors and doctors|length > 0 %}
+                    {% set primary = doctors[0] %}
+                    <article class="doctor-card primary">
+                        <div class="doctor-top">
+                            <div class="doctor-avatar-wrap">
+                                <span class="doctor-avatar-ring" aria-hidden="true"></span>
+                                <img class="doctor-avatar" src="{{ url_for('static', filename='assets/doctors/' + primary.avatar_type + '.svg') }}" alt="{{ primary.name }}">
+                            </div>
+                            <div>
+                                <div class="doctor-badge" data-i18n="doctor_primary_badge">Primary Recommendation</div>
+                                <h3 class="doctor-name">{{ primary.name }}</h3>
+                                <p class="doctor-meta">{{ primary.specialization }}</p>
+                                <p class="doctor-meta">{{ primary.rating }}/5 • {{ primary.experience }}</p>
+                            </div>
+                        </div>
+
+                        <p class="doctor-bio">{{ primary.bio }}</p>
+
+                        <div class="doctor-message">
+                            <p class="doctor-message-label" data-i18n="doctor_message_label">Doctor's Message</p>
+                            <p class="typewriter-text" data-typewriter data-message="{{ primary.message|e }}"></p>
+                            <p class="doctor-signature">- {{ primary.name }}, {{ primary.specialization }}</p>
+                        </div>
+
+                        <div class="doctor-action">
+                            <button type="button" class="neo-btn neo-btn-primary open-appointment-modal" data-i18n="book_appointment">Book Appointment</button>
+                        </div>
+                    </article>
+                    {% endif %}
+
+                    {% if doctors and doctors|length > 1 %}
+                    {% set backup = doctors[1] %}
+                    <article class="doctor-card backup">
+                        <div class="doctor-top">
+                            <div class="doctor-avatar-wrap">
+                                <span class="doctor-avatar-ring" aria-hidden="true"></span>
+                                <img class="doctor-avatar" src="{{ url_for('static', filename='assets/doctors/' + backup.avatar_type + '.svg') }}" alt="{{ backup.name }}">
+                            </div>
+                            <div>
+                                <div class="doctor-badge" data-i18n="doctor_backup_badge">Backup Recommendation</div>
+                                <h3 class="doctor-name">{{ backup.name }}</h3>
+                                <p class="doctor-meta">{{ backup.specialization }}</p>
+                                <p class="doctor-meta">{{ backup.rating }}/5 • {{ backup.experience }}</p>
+                            </div>
+                        </div>
+
+                        <p class="doctor-bio">{{ backup.bio }}</p>
+
+                        <div class="doctor-message">
+                            <p class="doctor-message-label" data-i18n="doctor_message_label">Doctor's Message</p>
+                            <p class="typewriter-text" data-typewriter data-message="{{ backup.message|e }}"></p>
+                            <p class="doctor-signature">- {{ backup.name }}, {{ backup.specialization }}</p>
+                        </div>
+
+                        <div class="doctor-action">
+                            <button type="button" class="neo-btn neo-btn-secondary open-appointment-modal" data-i18n="book_appointment">Book Appointment</button>
+                        </div>
+                    </article>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="symptom-summary" data-reveal>
+                <h2 data-i18n="selected_symptoms_title">Your Selected Symptoms</h2>
+
+                <div class="symptom-chip-grid">
+                    {% for symptom in selected_symptoms %}
+                    <span class="symptom-chip" data-symptom-key="{{ symptom }}">{{ symptom|replace('_', ' ')|replace('.1', ' duplicate')|title }}</span>
+                    {% endfor %}
+                </div>
+
+                <a href="{{ url_for('predict') }}" class="neo-btn neo-btn-ghost diagnose-again-btn" data-page-link data-i18n="diagnose_again">Diagnose Again</a>
+            </section>
+        </aside>
     </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/results.js') }}" defer></script>
 {% endblock %}

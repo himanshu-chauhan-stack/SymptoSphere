@@ -1,45 +1,114 @@
 {% extends "base.html" %}
 
+{% block title %}SymptoSphere | About{% endblock %}
+
 {% block content %}
-<section class="about-shell reveal-up">
-    <h1 data-i18n-key="about_title">About SymptoSphere</h1>
-    <p data-i18n-key="about_intro">
-        SymptoSphere is a full-stack educational medical intelligence platform that predicts likely diseases from symptoms using multiple machine learning models.
-    </p>
+<section class="about-page">
+    <header class="about-hero" data-reveal>
+        <h1 class="about-title" data-i18n="about_title">About SymptoSphere</h1>
+        <p class="about-subtitle" data-i18n="about_subtitle">
+            SymptoSphere is a precision-focused educational platform built to demonstrate modern AI diagnostics with a production-grade clinical interface.
+        </p>
+    </header>
 
     <div class="about-grid">
-        <article class="about-card">
-            <h2 data-i18n-key="about_project_title">Project Overview</h2>
-            <p data-i18n-key="about_project_body">
-                The system compares several models, selects the highest performer, and presents top predictions with confidence scores, treatment context, and specialist recommendations.
+        <article class="about-card" data-reveal>
+            <h2 data-i18n="about_mission_title">Our Mission</h2>
+            <p data-i18n="about_mission_body">
+                We translate symptom inputs into structured AI insights so learners can understand how machine learning can support early health awareness workflows.
             </p>
+
+            <h3 class="u-mt-6" data-i18n="about_stack_title">Technology Stack</h3>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-face front">
+                            <span class="tech-icon">Py</span>
+                            <strong data-i18n="tech_python_title">Python</strong>
+                        </div>
+                        <div class="tech-face back" data-i18n="tech_python_body">Core runtime powering data handling, model logic, and backend orchestration.</div>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-face front">
+                            <span class="tech-icon">Fl</span>
+                            <strong data-i18n="tech_flask_title">Flask</strong>
+                        </div>
+                        <div class="tech-face back" data-i18n="tech_flask_body">Lightweight web framework for routing, templates, and server-side rendering.</div>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-face front">
+                            <span class="tech-icon">ML</span>
+                            <strong data-i18n="tech_sklearn_title">scikit-learn</strong>
+                        </div>
+                        <div class="tech-face back" data-i18n="tech_sklearn_body">Multi-model classification and prediction confidence pipeline.</div>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-face front">
+                            <span class="tech-icon">DB</span>
+                            <strong data-i18n="tech_sqlite_title">SQLite</strong>
+                        </div>
+                        <div class="tech-face back" data-i18n="tech_sqlite_body">Local knowledge base for treatment guidance and specialist mapping.</div>
+                    </div>
+                </div>
+
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-face front">
+                            <span class="tech-icon">JS</span>
+                            <strong data-i18n="tech_js_title">JavaScript</strong>
+                        </div>
+                        <div class="tech-face back" data-i18n="tech_js_body">High-fidelity interactions, animation systems, and multilingual switching.</div>
+                    </div>
+                </div>
+            </div>
         </article>
 
-        <article class="about-card">
-            <h2 data-i18n-key="about_team_title">Team / Creator</h2>
-            <ul class="team-list">
-                <li>Himanshu Chauhan</li>
-                <li>Avishhoray Raj</li>
-                <li>Nihal Kumar</li>
-            </ul>
-        </article>
+        <aside class="about-card creator-card" data-reveal style="--delay: 0.08s;">
+            <h2 data-i18n="about_creator_title">Creator</h2>
 
-        <article class="about-card">
-            <h2 data-i18n-key="about_stack_title">Technology Stack</h2>
-            <ul>
-                <li>Flask + Jinja2</li>
-                <li>Scikit-learn, XGBoost, LightGBM</li>
-                <li>SQLite Database</li>
-                <li>HTML, CSS, JavaScript (Custom UI)</li>
-            </ul>
-        </article>
+            <div class="creator-profile">
+                <svg class="creator-avatar" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="60" cy="60" r="57" fill="rgba(8,13,26,0.9)" stroke="rgba(0,212,255,0.45)" />
+                    <circle cx="60" cy="46" r="19" fill="rgba(0,212,255,0.25)" />
+                    <path d="M28 94c6-16 18-24 32-24s26 8 32 24" stroke="rgba(0,212,255,0.8)" stroke-width="5" stroke-linecap="round" fill="none" />
+                    <circle cx="53" cy="44" r="2.5" fill="#d7f3ff" />
+                    <circle cx="67" cy="44" r="2.5" fill="#d7f3ff" />
+                    <path d="M53 55c4 3 10 3 14 0" stroke="#d7f3ff" stroke-width="2" stroke-linecap="round" />
+                </svg>
 
-        <article class="about-card">
-            <h2 data-i18n-key="about_repo_title">GitHub Repository</h2>
-            <a href="https://github.com/himanshu-chauhan-stack/SymptoSphere" target="_blank" rel="noopener noreferrer">
-                https://github.com/himanshu-chauhan-stack/SymptoSphere
-            </a>
-        </article>
+                <div>
+                    <h3 class="creator-name" data-i18n="about_creator_name">Himanshu Chauhan</h3>
+                    <p class="creator-role" data-i18n="about_creator_role">AI + Full-Stack Developer</p>
+                </div>
+            </div>
+
+            <div class="creator-links">
+                <a
+                    href="https://github.com/himanshu-chauhan-stack/SymptoSphere"
+                    class="neo-btn neo-btn-secondary"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-i18n="about_github_cta"
+                >
+                    View GitHub Repository
+                </a>
+            </div>
+
+            <div class="disclaimer-box">
+                <p data-i18n="about_disclaimer_body">
+                    SymptoSphere is strictly an educational and research project. It is not a medical device and must not be used for real medical decisions.
+                </p>
+            </div>
+        </aside>
     </div>
 </section>
 {% endblock %}

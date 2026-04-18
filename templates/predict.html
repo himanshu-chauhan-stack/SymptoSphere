@@ -1,46 +1,82 @@
 {% extends "base.html" %}
 
+{% block title %}SymptoSphere | Select Symptoms{% endblock %}
+
 {% block content %}
-<section class="page-header reveal-up">
-    <h1 data-i18n-key="predict_title">Symptom Selection Console</h1>
-    <p data-i18n-key="predict_subtitle">Search and choose every symptom you currently notice.</p>
+<section class="predict-page">
+    <header class="predict-header" data-reveal>
+        <h1 class="predict-title" data-i18n="predict_title">Select Your Symptoms</h1>
+        <p class="predict-subtitle" data-i18n="predict_subtitle">Be accurate. More symptoms means better prediction quality.</p>
+        <p class="predict-selected-counter" id="selectedCountText" data-i18n="predict_selected_counter" data-count="0"><strong>0</strong> symptoms selected</p>
+    </header>
+
+    <form id="predictionForm" method="post" action="{{ url_for('results') }}" novalidate>
+        <label class="search-shell" for="symptomSearch" data-reveal>
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-3.4-3.4"></path>
+            </svg>
+            <input
+                id="symptomSearch"
+                name="symptom_search"
+                class="search-input"
+                type="search"
+                autocomplete="off"
+                data-i18n-placeholder="predict_search_placeholder"
+                placeholder="Search symptoms... e.g. headache, fever, cough"
+            >
+        </label>
+
+        <div class="symptom-groups" id="symptomGroups" data-reveal>
+            <div class="symptom-category">
+                <div class="symptom-category-header">
+                    <h2 class="symptom-category-title">
+                        <span aria-hidden="true">+</span>
+                        <span data-i18n="predict_loading_categories">Preparing categorized symptom matrix...</span>
+                    </h2>
+                </div>
+                <div class="symptom-category-grid" id="symptomCatalog">
+                    {% for symptom in symptoms %}
+                    <label class="symptom-card" data-symptom-card data-search="{{ symptom|replace('_', ' ')|lower }}">
+                        <input type="checkbox" class="symptom-input" name="symptoms" value="{{ symptom }}">
+                        <span class="symptom-label" data-symptom-key="{{ symptom }}">{{ symptom|replace('_', ' ')|replace('.1', ' duplicate')|title }}</span>
+                        <span class="symptom-check" aria-hidden="true">
+                            <svg viewBox="0 0 20 20">
+                                <path d="M4 10l4 4 8-8"></path>
+                            </svg>
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="predict-sticky-bar" aria-live="polite">
+            <div class="container predict-sticky-shell">
+                <div class="sticky-selected" id="stickySelectedText" data-i18n="predict_selected_counter" data-count="0"><strong>0</strong> symptoms selected</div>
+
+                <button type="submit" id="predictSubmitButton" class="neo-btn neo-btn-primary predict-submit" disabled data-i18n="predict_cta_button">
+                    Predict Disease
+                </button>
+
+                <button type="button" id="clearSymptomsButton" class="clear-all" data-i18n="predict_clear_all">Clear All</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="loading-overlay" id="predictLoadingOverlay" aria-hidden="true">
+        <div class="loading-card">
+            <svg class="dna-loader" viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path class="dna-curve cyan" d="M20 20c40 0 40 140 80 140s40-140 80-140"></path>
+                <path class="dna-curve green" d="M20 160c40 0 40-140 80-140s40 140 80 140"></path>
+                <path d="M44 44h132M52 70h116M60 96h100M52 122h116M44 148h132" stroke="rgba(125, 196, 219, 0.45)" stroke-width="1.4" stroke-linecap="round"></path>
+            </svg>
+            <h3 class="loading-title" data-i18n="loading_title">Analyzing Symptoms</h3>
+            <p class="loading-text" data-i18n="loading_text">Analyzing symptoms across ensemble models...</p>
+            <div class="loading-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+    </div>
 </section>
-
-<form id="predictionForm" method="post" action="{{ url_for('results') }}" class="predict-form">
-    <div class="toolbar-card reveal-up" style="--delay: 0.05s;">
-        <label for="symptomSearch" data-i18n-key="search_label">Search Symptoms</label>
-        <input
-            id="symptomSearch"
-            class="search-input"
-            type="search"
-            placeholder="Type a symptom..."
-            data-i18n-placeholder="search_placeholder"
-            autocomplete="off"
-        >
-        <p class="selected-counter" id="selectedCount" data-i18n-key="selected_count" data-count="0">0 selected</p>
-    </div>
-
-    <div class="symptom-grid" id="symptomGrid">
-        {% for symptom in symptoms %}
-            <label class="symptom-toggle reveal-up" style="--delay: {{ loop.index0 * 0.002 }}s;" data-symptom-item data-search="{{ symptom|replace('_', ' ')|lower }}">
-                <input type="checkbox" class="symptom-input" name="symptoms" value="{{ symptom }}">
-                <span class="toggle-mark" aria-hidden="true"></span>
-                <span class="symptom-text" data-symptom-key="{{ symptom }}">{{ symptom|replace('_', ' ')|replace('.1', ' duplicate')|title }}</span>
-            </label>
-        {% endfor %}
-    </div>
-
-    <div class="submit-row reveal-up" style="--delay: 0.2s;">
-        <button type="submit" class="btn btn-primary big" data-i18n-key="predict_button">Predict Disease</button>
-    </div>
-</form>
-
-<div class="loading-overlay" id="loadingOverlay" aria-hidden="true">
-    <div class="loading-card">
-        <div class="medical-cross"></div>
-        <p data-i18n-key="loading_text">Analyzing symptoms with medical AI models...</p>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}

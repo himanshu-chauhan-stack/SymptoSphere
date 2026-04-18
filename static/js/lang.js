@@ -1,148 +1,219 @@
 (() => {
+    const STORAGE_KEY = "symptosphere.language";
     const DEFAULT_LANGUAGE = "en";
-    const SUPPORTED_LANGUAGES = ["en", "hi"];
+    const SUPPORTED = new Set(["en", "hi"]);
 
+    const cache = new Map();
     let currentLanguage = DEFAULT_LANGUAGE;
-    let currentTranslations = {};
-    const cache = {};
+    let currentBundle = {};
 
-    async function fetchTranslations(language) {
-        if (cache[language]) {
-            return cache[language];
+    function interpolate(template, element) {
+        if (typeof template !== "string") {
+            return template;
+        }
+
+        const values = {
+            count: element.getAttribute("data-count") || "",
+            accuracy: element.getAttribute("data-accuracy") || "",
+            value: element.getAttribute("data-value") || "",
+            model: element.getAttribute("data-model") || "",
+            years: element.getAttribute("data-years") || "",
+            rating: element.getAttribute("data-rating") || "",
+        };
+
+        return template.replaceAll(/\{(count|accuracy|value|model|years|rating)\}/g, (_, key) => values[key] ?? "");
+    }
+
+    async function fetchBundle(language) {
+        if (cache.has(language)) {
+            return cache.get(language);
         }
 
         const response = await fetch(`/api/translations/${language}`);
         if (!response.ok) {
-            throw new Error(`Translation fetch failed: ${language}`);
+            throw new Error(`Failed translation fetch for ${language}`);
         }
 
-        const payload = await response.json();
-        cache[language] = payload;
-        return payload;
+        const data = await response.json();
+        cache.set(language, data);
+        return data;
     }
 
-    function fillTemplate(value, element) {
-        if (typeof value !== "string") {
-            return value;
-        }
-
-        let output = value;
-        const count = element.dataset.count;
-        const accuracy = element.dataset.accuracy;
-
-        if (count) {
-            output = output.replaceAll("{count}", count);
-        }
-        if (accuracy) {
-            output = output.replaceAll("{accuracy}", accuracy);
-        }
-        return output;
+    function defaultSymptomLabel(raw) {
+        return raw
+            .replaceAll("_", " ")
+            .replaceAll(".1", " duplicate")
+            .replace(/\s+/g, " ")
+            .trim()
+            .replace(/\b\w/g, (match) => match.toUpperCase());
     }
 
-    function applyTextTranslations(translations) {
-        document.querySelectorAll("[data-i18n-key]").forEach((element) => {
-            const key = element.dataset.i18nKey;
+    function applyText(bundle) {
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+            const key = element.getAttribute("data-i18n");
             if (!key) {
                 return;
             }
-            const value = translations[key];
+
+            const value = bundle[key];
             if (typeof value === "string") {
-                element.textContent = fillTemplate(value, element);
+                element.innerHTML = interpolate(value, element);
             }
         });
 
         document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
-            const key = element.dataset.i18nPlaceholder;
+            const key = element.getAttribute("data-i18n-placeholder");
             if (!key) {
                 return;
             }
-            const value = translations[key];
+
+            const value = bundle[key];
             if (typeof value === "string") {
-                element.setAttribute("placeholder", value);
+                element.setAttribute("placeholder", interpolate(value, element));
+            }
+        });
+
+        document.querySelectorAll("[data-i18n-title]").forEach((element) => {
+            const key = element.getAttribute("data-i18n-title");
+            if (!key) {
+                return;
+            }
+
+            const value = bundle[key];
+            if (typeof value === "string") {
+                element.setAttribute("title", interpolate(value, element));
+            }
+        });
+
+        document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+            const key = element.getAttribute("data-i18n-aria-label");
+            if (!key) {
+                return;
+            }
+
+            const value = bundle[key];
+            if (typeof value === "string") {
+                element.setAttribute("aria-label", interpolate(value, element));
             }
         });
     }
 
-    function applySymptomTranslations(translations) {
-        const symptomMap = translations.symptoms || {};
+    function applySymptomMap(bundle) {
+        const map = bundle.symptoms || {};
+
         document.querySelectorAll("[data-symptom-key]").forEach((element) => {
-            const key = element.dataset.symptomKey;
+            const key = element.getAttribute("data-symptom-key");
             if (!key) {
                 return;
             }
 
-            const value = symptomMap[key];
-            if (typeof value === "string" && value.trim()) {
-                element.textContent = value;
+            if (!element.dataset.originalText) {
+                element.dataset.originalText = element.textContent || "";
+            }
+
+            const translated = map[key];
+            if (typeof translated === "string" && translated.trim()) {
+                element.textContent = translated;
+            } else if (currentLanguage === "en") {
+                element.textContent = defaultSymptomLabel(key);
+            } else {
+                element.textContent = element.dataset.originalText || defaultSymptomLabel(key);
             }
         });
     }
 
-    function applyDiseaseTranslations(translations) {
-        const diseaseMap = translations.diseases || {};
+    function applyDiseaseMap(bundle) {
+        const map = bundle.diseases || {};
+
         document.querySelectorAll("[data-disease-key]").forEach((element) => {
-            const key = element.dataset.diseaseKey;
+            const key = element.getAttribute("data-disease-key");
             if (!key) {
                 return;
             }
 
-            const value = diseaseMap[key];
-            if (typeof value === "string" && value.trim()) {
-                element.textContent = value;
+            if (!element.dataset.originalText) {
+                element.dataset.originalText = element.textContent || "";
+            }
+
+            const translated = map[key];
+            if (typeof translated === "string" && translated.trim()) {
+                element.textContent = translated;
+            } else {
+                element.textContent = element.dataset.originalText || key;
             }
         });
     }
 
-    function updateLanguageToggleLabel() {
-        const button = document.getElementById("languageToggle");
-        if (!button) {
+    function updateLanguageToggle() {
+        const toggle = document.getElementById("languageToggle");
+        if (!toggle) {
             return;
         }
 
-        const nextLanguage = currentLanguage === "en" ? "हिंदी" : "English";
-        const prefix = currentLanguage === "en" ? "EN" : "HI";
-        button.textContent = `${prefix} | ${nextLanguage}`;
+        toggle.classList.toggle("is-hi", currentLanguage === "hi");
+        toggle.setAttribute("data-language", currentLanguage);
+    }
+
+    function applyDocumentLanguage(language) {
+        document.documentElement.lang = language;
+        document.body.classList.toggle("is-hindi", language === "hi");
     }
 
     async function applyLanguage(language, persist = true) {
-        const selected = SUPPORTED_LANGUAGES.includes(language) ? language : DEFAULT_LANGUAGE;
+        const normalized = SUPPORTED.has(language) ? language : DEFAULT_LANGUAGE;
 
         try {
-            const translations = await fetchTranslations(selected);
-            currentLanguage = selected;
-            currentTranslations = translations;
+            const bundle = await fetchBundle(normalized);
+            currentLanguage = normalized;
+            currentBundle = bundle;
 
-            document.documentElement.lang = selected;
-            applyTextTranslations(translations);
-            applySymptomTranslations(translations);
-            applyDiseaseTranslations(translations);
-            updateLanguageToggleLabel();
+            applyDocumentLanguage(currentLanguage);
+            applyText(bundle);
+            applySymptomMap(bundle);
+            applyDiseaseMap(bundle);
+            updateLanguageToggle();
 
             if (persist) {
-                localStorage.setItem("symptosphere.language", selected);
+                localStorage.setItem(STORAGE_KEY, currentLanguage);
             }
 
             document.dispatchEvent(
                 new CustomEvent("languageChanged", {
                     detail: {
-                        language: selected,
-                        translations,
+                        language: currentLanguage,
+                        bundle: currentBundle,
                     },
                 }),
             );
         } catch (error) {
-            if (selected !== DEFAULT_LANGUAGE) {
+            if (normalized !== DEFAULT_LANGUAGE) {
                 await applyLanguage(DEFAULT_LANGUAGE, persist);
             }
         }
     }
 
-    function translate(key, fallback = "") {
-        const value = currentTranslations[key];
-        if (typeof value === "string") {
-            return value;
+    function t(key, fallback = "") {
+        const value = currentBundle[key];
+        return typeof value === "string" ? value : fallback;
+    }
+
+    function refresh() {
+        applyText(currentBundle);
+        applySymptomMap(currentBundle);
+        applyDiseaseMap(currentBundle);
+        updateLanguageToggle();
+    }
+
+    function initLanguageToggle() {
+        const toggle = document.getElementById("languageToggle");
+        if (!toggle) {
+            return;
         }
-        return fallback;
+
+        toggle.addEventListener("click", async () => {
+            const next = currentLanguage === "en" ? "hi" : "en";
+            await applyLanguage(next, true);
+        });
     }
 
     function bootstrap() {
@@ -150,19 +221,15 @@
             get language() {
                 return currentLanguage;
             },
-            translate,
+            t,
+            refresh,
+            applyLanguage,
         };
 
-        const toggle = document.getElementById("languageToggle");
-        if (toggle) {
-            toggle.addEventListener("click", async () => {
-                const next = currentLanguage === "en" ? "hi" : "en";
-                await applyLanguage(next);
-            });
-        }
+        initLanguageToggle();
 
-        const stored = localStorage.getItem("symptosphere.language") || DEFAULT_LANGUAGE;
-        void applyLanguage(stored, false);
+        const preferred = localStorage.getItem(STORAGE_KEY) || DEFAULT_LANGUAGE;
+        void applyLanguage(preferred, false);
     }
 
     if (document.readyState === "loading") {

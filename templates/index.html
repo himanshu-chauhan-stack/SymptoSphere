@@ -1,66 +1,148 @@
 {% extends "base.html" %}
 
+{% block title %}SymptoSphere | AI Diagnostic Dashboard{% endblock %}
+
 {% block content %}
-<section class="hero-grid">
-    <div class="hero-content reveal-up">
-        <p class="hero-kicker" data-i18n-key="hero_kicker">FUTURISTIC MEDICAL INTELLIGENCE</p>
-        <h1 data-i18n-key="hero_title">AI-Powered Disease Prediction</h1>
-        <p class="hero-subtitle" data-i18n-key="hero_subtitle">
-            Enter your symptoms and let our multi-model intelligence engine estimate likely conditions in seconds.
+<section class="home-hero">
+    <div class="hero-content" data-reveal>
+        <span class="kicker" data-i18n="hero_badge">AI-Powered Diagnostics</span>
+
+        <h1 class="hero-title">
+            <span class="hero-title-line" data-word-reveal data-i18n="hero_line_1">Predict Diseases.</span>
+            <span class="hero-title-line secondary" data-word-reveal data-i18n="hero_line_2">Before They Predict You.</span>
+            <span class="typing-caret" aria-hidden="true"></span>
+        </h1>
+
+        <p class="hero-subtext" data-i18n="hero_subtitle">
+            Select your symptoms. Let our ensemble of machine learning models analyze and diagnose in seconds.
         </p>
+
         <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ url_for('predict') }}" data-i18n-key="hero_cta_primary">Start Symptom Analysis</a>
-            <a class="btn btn-ghost" href="{{ url_for('about') }}" data-i18n-key="hero_cta_secondary">Learn About the Project</a>
+            <a href="{{ url_for('predict') }}" class="neo-btn neo-btn-primary burst-button" data-page-link data-i18n="hero_cta_primary">Start Diagnosis</a>
+            <a href="#how-it-works" class="neo-btn neo-btn-secondary" data-i18n="hero_cta_secondary">See How It Works</a>
         </div>
     </div>
-    <div class="hero-visual reveal-up-delay">
-        <div class="pulse-ring"></div>
-        <div class="pulse-ring second"></div>
-        <div class="center-core">
-            <span>AI</span>
+
+    <div class="hero-visual" data-reveal style="--delay: 0.08s;">
+        <span class="holo-orbit one" aria-hidden="true"></span>
+        <span class="holo-orbit two" aria-hidden="true"></span>
+        <span class="holo-orbit three" aria-hidden="true"></span>
+
+        <div class="holo-body" aria-hidden="true">
+            <svg viewBox="0 0 320 430" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M160 32c-26 0-47 21-47 47v35c0 15-11 28-25 32-30 8-50 35-50 67v85c0 28 23 51 51 51h16v35c0 12 10 22 22 22h66c12 0 22-10 22-22v-35h16c28 0 51-23 51-51v-85c0-32-20-59-50-67-14-4-25-17-25-32V79c0-26-21-47-47-47Z" stroke="rgba(0,212,255,0.7)" stroke-width="2.5"/>
+                <path d="M160 78v252" stroke="rgba(0,212,255,0.45)" stroke-width="1.5" stroke-dasharray="5 7"/>
+                <path d="M119 166h82" stroke="rgba(0,212,255,0.35)" stroke-width="1.2"/>
+                <path d="M108 207h104" stroke="rgba(0,212,255,0.25)" stroke-width="1.2"/>
+                <path d="M113 253h94" stroke="rgba(0,212,255,0.2)" stroke-width="1.2"/>
+            </svg>
+            <span class="pulse-node brain"></span>
+            <span class="pulse-node lungs"></span>
+            <span class="pulse-node heart"></span>
+            <span class="pulse-node liver"></span>
         </div>
     </div>
 </section>
 
-<section class="stats-grid">
-    <article class="stat-card reveal-up" style="--delay: 0.05s;">
-        <h3 class="counter" data-counter-target="{{ stats.symptom_count }}">0</h3>
-        <p data-i18n-key="stats_symptoms" data-count="{{ stats.symptom_count }}">132 Symptoms Analyzed</p>
-    </article>
-    <article class="stat-card reveal-up" style="--delay: 0.1s;">
-        <h3 class="counter" data-counter-target="{{ stats.disease_count }}">0</h3>
-        <p data-i18n-key="stats_diseases" data-count="{{ stats.disease_count }}">40+ Diseases Detected</p>
-    </article>
-    <article class="stat-card reveal-up" style="--delay: 0.15s;">
-        <h3 class="counter" data-counter-target="{{ stats.top_accuracy|round|int }}">0</h3>
-        <p data-i18n-key="stats_accuracy" data-accuracy="{{ '%.2f'|format(stats.top_accuracy) }}">97%+ Model Accuracy</p>
-    </article>
-</section>
+<section class="stats-section" data-reveal>
+    <div class="stats-grid">
+        <article class="stat-card" data-reveal style="--delay: 0.05s;">
+            <h2 class="stat-number cyan" data-counter-target="{{ stats.symptom_count }}" data-counter-suffix="">0</h2>
+            <p class="stat-label" data-i18n="stats_symptoms_label" data-count="{{ stats.symptom_count }}">Symptoms Analyzed</p>
+        </article>
 
-<section class="flow-section">
-    <h2 data-i18n-key="how_it_works_title">How It Works</h2>
-    <div class="flow-grid">
-        <article class="flow-card reveal-up" style="--delay: 0.05s;">
-            <div class="step-no">01</div>
-            <h3 data-i18n-key="step_one_title">Select Symptoms</h3>
-            <p data-i18n-key="step_one_body">Choose from 132 curated symptoms using smart search and toggle controls.</p>
+        <article class="stat-card" data-reveal style="--delay: 0.1s;">
+            <h2 class="stat-number green" data-counter-target="{{ stats.disease_count }}" data-counter-suffix="+">0+</h2>
+            <p class="stat-label" data-i18n="stats_diseases_label" data-count="{{ stats.disease_count }}">Diseases Detected</p>
         </article>
-        <article class="flow-card reveal-up" style="--delay: 0.1s;">
-            <div class="step-no">02</div>
-            <h3 data-i18n-key="step_two_title">AI Analyzes</h3>
-            <p data-i18n-key="step_two_body">Multiple machine learning models evaluate your symptom vector in real time.</p>
-        </article>
-        <article class="flow-card reveal-up" style="--delay: 0.15s;">
-            <div class="step-no">03</div>
-            <h3 data-i18n-key="step_three_title">Get Insights</h3>
-            <p data-i18n-key="step_three_body">View top disease predictions, confidence, treatment guidance, and doctor suggestions.</p>
+
+        <article class="stat-card" data-reveal style="--delay: 0.15s;">
+            <h2 class="stat-number amber" data-counter-target="{{ '%.1f'|format(stats.top_accuracy) }}" data-counter-suffix="%">0%</h2>
+            <p class="stat-label" data-i18n="stats_accuracy_label" data-accuracy="{{ '%.1f'|format(stats.top_accuracy) }}">Model Accuracy</p>
         </article>
     </div>
 </section>
 
-<section class="notice-banner reveal-up">
-    <p data-i18n-key="home_disclaimer">
-        This tool is for educational purposes only. Always consult a real doctor.
-    </p>
+<section class="workflow-section" id="how-it-works">
+    <div class="section-heading" data-reveal>
+        <h2 data-i18n="how_title">How SymptoSphere Works</h2>
+        <p data-i18n="how_subtitle">Three precise steps from symptoms to structured diagnostic insights.</p>
+    </div>
+
+    <div class="workflow-grid">
+        <article class="workflow-card" data-reveal style="--delay: 0.05s;">
+            <div class="workflow-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="4" width="8" height="7" rx="1"></rect>
+                    <rect x="13" y="4" width="8" height="7" rx="1"></rect>
+                    <rect x="3" y="13" width="8" height="7" rx="1"></rect>
+                    <path d="M15 17l2 2 4-5"></path>
+                </svg>
+            </div>
+            <p class="workflow-step">01</p>
+            <h3 class="workflow-title" data-i18n="step_1_title">Select Symptoms</h3>
+            <p class="workflow-description" data-i18n="step_1_body">Choose from 132 medically verified symptoms through intelligent grouped controls.</p>
+        </article>
+
+        <article class="workflow-card" data-reveal style="--delay: 0.12s;">
+            <div class="workflow-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="5" cy="12" r="2"></circle>
+                    <circle cx="12" cy="6" r="2"></circle>
+                    <circle cx="19" cy="12" r="2"></circle>
+                    <circle cx="12" cy="18" r="2"></circle>
+                    <path d="M7 11l3-3M14 8l3 3M14 16l3-3M7 13l3 3"></path>
+                </svg>
+            </div>
+            <p class="workflow-step">02</p>
+            <h3 class="workflow-title" data-i18n="step_2_title">AI Analyzes</h3>
+            <p class="workflow-description" data-i18n="step_2_body">Six ML models score your symptom profile. The strongest model leads the final decision.</p>
+        </article>
+
+        <article class="workflow-card" data-reveal style="--delay: 0.18s;">
+            <div class="workflow-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M7 3h10l3 3v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"></path>
+                    <path d="M9 12h6M9 16h4M9 8h6"></path>
+                </svg>
+            </div>
+            <p class="workflow-step">03</p>
+            <h3 class="workflow-title" data-i18n="step_3_title">Get Diagnosis</h3>
+            <p class="workflow-description" data-i18n="step_3_body">Receive top 3 conditions with confidence, treatment guidance, and specialist recommendations.</p>
+        </article>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="section-heading" data-reveal>
+        <h2 data-i18n="feature_title">Feature Highlights</h2>
+        <p data-i18n="feature_subtitle">Purpose-built health intelligence features with expressive interactions.</p>
+    </div>
+
+    <div class="features-grid">
+        <article class="feature-card tilt-card" data-reveal style="--delay: 0.04s;">
+            <div class="feature-icon" aria-hidden="true">AI</div>
+            <h3 class="feature-title" data-i18n="feature_1_title">Multi-Model Ensemble</h3>
+            <p class="feature-body" data-i18n="feature_1_body">Random Forest, SVM, Decision Tree and more with automatic best-model selection.</p>
+        </article>
+
+        <article class="feature-card tilt-card" data-reveal style="--delay: 0.08s;">
+            <div class="feature-icon" aria-hidden="true">Rx</div>
+            <h3 class="feature-title" data-i18n="feature_2_title">Treatment Info</h3>
+            <p class="feature-body" data-i18n="feature_2_body">Actionable overview, medicine guidance, home-care practices, and safety precautions.</p>
+        </article>
+
+        <article class="feature-card tilt-card" data-reveal style="--delay: 0.12s;">
+            <div class="feature-icon" aria-hidden="true">MD</div>
+            <h3 class="feature-title" data-i18n="feature_3_title">Doctor Matching</h3>
+            <p class="feature-body" data-i18n="feature_3_body">Condition-aware specialist recommendation cards tailored to your top prediction.</p>
+        </article>
+
+        <article class="feature-card tilt-card" data-reveal style="--delay: 0.16s;">
+            <div class="feature-icon" aria-hidden="true">GL</div>
+            <h3 class="feature-title" data-i18n="feature_4_title">Multilingual</h3>
+            <p class="feature-body" data-i18n="feature_4_body">Instant language switch between English and Hindi without page reload.</p>
+        </article>
+    </div>
 </section>
 {% endblock %}

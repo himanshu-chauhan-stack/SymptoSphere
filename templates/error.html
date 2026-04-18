@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="error-shell reveal-up">
-    <h1>{{ error_title }}</h1>
-    <p>{{ error_message }}</p>
+<section class="error-page">
+    <article class="error-card" data-reveal>
+        <h1 class="error-title">{{ error_title }}</h1>
+        <p class="error-message">{{ error_message }}</p>
     {% if error_details %}
         <pre class="error-details">{{ error_details }}</pre>
     {% endif %}
-    <div class="hero-actions">
-        <a class="btn btn-primary" href="{{ url_for('index') }}" data-i18n-key="go_home">Go Home</a>
-        <a class="btn btn-ghost" href="{{ url_for('predict') }}" data-i18n-key="try_again">Try Again</a>
-    </div>
+        <div class="error-actions">
+            <a class="neo-btn neo-btn-primary" href="{{ url_for('index') }}" data-page-link data-i18n="go_home">Go Home</a>
+            <a class="neo-btn neo-btn-ghost" href="{{ url_for('predict') }}" data-page-link data-i18n="try_again">Try Again</a>
+        </div>
+    </article>
 </section>
 {% endblock %}
