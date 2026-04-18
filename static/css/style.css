@@ -2314,6 +2314,15 @@ p {
     font-size: 0.98rem;
 }
 
+.creator-team-title {
+    margin: 0.5rem 0 0;
+    color: #86abc7;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
 .creator-team {
     margin: 0.28rem 0 0;
     padding: 0;
