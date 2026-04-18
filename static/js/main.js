@@ -41,6 +41,11 @@
             return;
         }
 
+        if (!("IntersectionObserver" in window)) {
+            targets.forEach((target) => target.classList.add("revealed"));
+            return;
+        }
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {

@@ -4,14 +4,14 @@
 
 {% block content %}
 <section class="predict-page">
-    <header class="predict-header" data-reveal>
+    <header class="predict-header">
         <h1 class="predict-title" data-i18n="predict_title">Select Your Symptoms</h1>
         <p class="predict-subtitle" data-i18n="predict_subtitle">Be accurate. More symptoms means better prediction quality.</p>
         <p class="predict-selected-counter" id="selectedCountText" data-i18n="predict_selected_counter" data-count="0"><strong>0</strong> symptoms selected</p>
     </header>
 
     <form id="predictionForm" method="post" action="{{ url_for('results') }}" novalidate>
-        <label class="search-shell" for="symptomSearch" data-reveal>
+        <label class="search-shell" for="symptomSearch">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <circle cx="11" cy="11" r="7"></circle>
                 <path d="m20 20-3.4-3.4"></path>
@@ -27,7 +27,7 @@
             >
         </label>
 
-        <div class="symptom-groups" id="symptomGroups" data-reveal>
+        <div class="symptom-groups" id="symptomGroups">
             <div class="symptom-category">
                 <div class="symptom-category-header">
                     <h2 class="symptom-category-title">
