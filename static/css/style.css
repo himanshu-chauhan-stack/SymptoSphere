@@ -1329,7 +1329,7 @@ p {
     border-radius: var(--radius-md);
     border: 1px solid rgba(0, 212, 255, 0.16);
     background: rgba(8, 13, 26, 0.84);
-    overflow: clip;
+    overflow: hidden;
 }
 
 .symptom-category.is-hidden {

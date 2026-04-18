@@ -1,4 +1,6 @@
 (() => {
+    const IS_MOBILE_VIEW = window.matchMedia("(max-width: 900px)").matches;
+
     const CATEGORY_CONFIG = [
         {
             id: "fever",
@@ -58,8 +60,10 @@
 
     const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+    const normalizeSearchText = (value) => value.toLowerCase().replace(/_/g, " ");
+
     function classifySymptom(value) {
-        const normalized = value.toLowerCase().replaceAll("_", " ");
+        const normalized = normalizeSearchText(value);
 
         for (const category of CATEGORY_CONFIG) {
             if (category.id === "general") {
@@ -164,18 +168,15 @@
             return;
         }
 
+        // Ensure restored browser state never starts with an old filter.
+        search.value = "";
+
         const cards = Array.from(catalog.querySelectorAll(".symptom-card"));
         if (!cards.length) {
             return;
         }
 
         const sectionMap = new Map();
-
-        CATEGORY_CONFIG.forEach((category) => {
-            const entry = createSection(category);
-            sectionMap.set(category.id, entry);
-            groups.appendChild(entry.section);
-        });
 
         cards
             .sort((a, b) => {
@@ -189,19 +190,45 @@
                     return;
                 }
 
-                const category = classifySymptom(input.value);
-                const section = sectionMap.get(category) || sectionMap.get("general");
-                section?.grid.appendChild(card);
-
-                card.dataset.category = category;
-                card.dataset.search = input.value.toLowerCase().replaceAll("_", " ");
+                card.dataset.search = normalizeSearchText(input.value);
 
                 card.addEventListener("pointerdown", (event) => {
                     injectRipple(card, event);
                 });
             });
 
-        catalog.remove();
+        if (IS_MOBILE_VIEW) {
+            const mobileHeading = groups.querySelector("[data-i18n='predict_loading_categories']");
+            if (mobileHeading) {
+                mobileHeading.setAttribute("data-i18n", "category_general");
+                mobileHeading.textContent = "General Indicators";
+            }
+
+            cards.forEach((card) => {
+                card.dataset.category = "general";
+                catalog.appendChild(card);
+            });
+        } else {
+            CATEGORY_CONFIG.forEach((category) => {
+                const entry = createSection(category);
+                sectionMap.set(category.id, entry);
+                groups.appendChild(entry.section);
+            });
+
+            cards.forEach((card) => {
+                const input = card.querySelector(".symptom-input");
+                if (!(input instanceof HTMLInputElement)) {
+                    return;
+                }
+
+                const category = classifySymptom(input.value);
+                const section = sectionMap.get(category) || sectionMap.get("general");
+                section?.grid.appendChild(card);
+                card.dataset.category = category;
+            });
+
+            catalog.remove();
+        }
 
         if (typeof window.SymptoI18n?.refresh === "function") {
             window.SymptoI18n.refresh();
@@ -238,7 +265,9 @@
                 card.classList.toggle("is-filtered-out", !match);
             });
 
-            updateCategoryVisibility(Array.from(sectionMap.values()));
+            if (sectionMap.size) {
+                updateCategoryVisibility(Array.from(sectionMap.values()));
+            }
         };
 
         allInputs.forEach((input) => {
