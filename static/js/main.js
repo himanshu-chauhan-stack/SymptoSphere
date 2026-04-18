@@ -1,5 +1,6 @@
 (() => {
-    const POINTER_FINE = window.matchMedia("(pointer: fine)").matches;
+    const IS_MOBILE_VIEW = window.matchMedia("(max-width: 900px)").matches;
+    const PREFERS_REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function setActiveNav() {
         const path = window.location.pathname;
@@ -204,75 +205,6 @@
         });
     }
 
-    function initCustomCursor() {
-        if (!POINTER_FINE) {
-            return;
-        }
-
-        const dot = document.querySelector(".cursor-dot");
-        const ring = document.querySelector(".cursor-ring");
-        if (!dot || !ring) {
-            return;
-        }
-
-        const cursor = {
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-            ringX: window.innerWidth / 2,
-            ringY: window.innerHeight / 2,
-            visible: false,
-        };
-
-        const setPosition = (element, x, y) => {
-            element.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-        };
-
-        const render = () => {
-            cursor.ringX += (cursor.x - cursor.ringX) * 0.18;
-            cursor.ringY += (cursor.y - cursor.ringY) * 0.18;
-
-            setPosition(dot, cursor.x, cursor.y);
-            setPosition(ring, cursor.ringX, cursor.ringY);
-            window.requestAnimationFrame(render);
-        };
-
-        document.addEventListener("mousemove", (event) => {
-            cursor.x = event.clientX;
-            cursor.y = event.clientY;
-
-            if (!cursor.visible) {
-                cursor.visible = true;
-                document.body.classList.add("cursor-visible");
-            }
-        });
-
-        document.addEventListener("mouseleave", () => {
-            cursor.visible = false;
-            document.body.classList.remove("cursor-visible");
-        });
-
-        const hoverSelectors = "a, button, input, label, .symptom-card, .neo-btn, [role='button']";
-
-        document.addEventListener("mouseover", (event) => {
-            if (event.target instanceof Element && event.target.closest(hoverSelectors)) {
-                document.body.classList.add("cursor-hover");
-            }
-        });
-
-        document.addEventListener("mouseout", (event) => {
-            if (event.target instanceof Element && event.target.closest(hoverSelectors)) {
-                document.body.classList.remove("cursor-hover");
-            }
-        });
-
-        document.addEventListener("mousedown", () => {
-            document.body.classList.add("cursor-click");
-            window.setTimeout(() => document.body.classList.remove("cursor-click"), 220);
-        });
-
-        window.requestAnimationFrame(render);
-    }
-
     function initModal() {
         const modal = document.getElementById("appointmentModal");
         const closeButton = document.getElementById("appointmentCloseButton");
@@ -343,6 +275,10 @@
     }
 
     function initCanvasNetwork() {
+        if (IS_MOBILE_VIEW || PREFERS_REDUCED_MOTION) {
+            return;
+        }
+
         const canvas = document.getElementById("bioluminescent-canvas");
         if (!(canvas instanceof HTMLCanvasElement)) {
             return;
@@ -505,7 +441,6 @@
         initAnimatedCounters();
         initFeatureTilt();
         initBurstButtons();
-        initCustomCursor();
         initPageTransitions();
         initModal();
         initCanvasNetwork();
