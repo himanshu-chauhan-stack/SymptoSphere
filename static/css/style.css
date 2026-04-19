@@ -1322,10 +1322,13 @@ p {
 
 .symptom-groups {
     display: grid;
-    gap: 1.1rem;
+    gap: 1.25rem;
+    margin-top: 0.35rem;
 }
 
 .symptom-category {
+    display: grid;
+    grid-template-rows: auto 1fr;
     border-radius: var(--radius-md);
     border: 1px solid rgba(0, 212, 255, 0.16);
     background: rgba(8, 13, 26, 0.84);
@@ -1337,14 +1340,13 @@ p {
 }
 
 .symptom-category-header {
-    position: sticky;
-    top: calc(64px + 4.2rem);
-    z-index: 5;
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.6rem;
-    padding: 0.7rem 0.9rem;
+    padding: 0.75rem 0.9rem;
     border-bottom: 1px solid rgba(0, 212, 255, 0.16);
     background: rgba(13, 21, 40, 0.95);
     backdrop-filter: blur(10px);
@@ -1368,6 +1370,7 @@ p {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 0.75rem;
     padding: 0.85rem;
+    align-content: start;
 }
 
 .symptom-card {
@@ -3227,9 +3230,6 @@ p {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .symptom-category-header {
-        top: calc(64px + 4rem);
-    }
 }
 
 /* ========================================================================== */
