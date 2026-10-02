@@ -1,0 +1,24 @@
+﻿<svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="220" y2="220" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1A2E58"/>
+      <stop offset="1" stop-color="#09152E"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="34" y1="90" x2="186" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F2FDFF"/>
+      <stop offset="1" stop-color="#dff7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="220" height="220" rx="34" fill="url(#bg)"/>
+  <circle cx="110" cy="84" r="37" fill="#ECC0A2"/>
+  <path d="M70 88C76 55 145 50 152 88C152 88 153 70 142 58C130 45 90 43 78 58C67 72 70 88 70 88Z" fill="#3A2731"/>
+  <path d="M49 206C54 158 81 130 110 130C139 130 166 158 171 206H49Z" fill="url(#coat)"/>
+  <path d="M110 130L92 154L110 174L128 154L110 130Z" fill="#0f2c46"/>
+  <rect x="96" y="156" width="28" height="36" rx="8" fill="#0c2239"/>
+  <path d="M84 186H136" stroke="#00FF88" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="94" cy="84" r="3.5" fill="#3d2e2a"/>
+  <circle cx="126" cy="84" r="3.5" fill="#3d2e2a"/>
+  <path d="M96 102C100 108 120 108 124 102" stroke="#a4695b" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="178" cy="40" r="22" fill="rgba(255,255,255,0.18)"/>
+  <text x="178" y="46" text-anchor="middle" fill="#ffffff" font-family="Nunito, Arial" font-size="18" font-weight="700">F</text>
+</svg>

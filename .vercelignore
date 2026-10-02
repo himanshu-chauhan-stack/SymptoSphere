@@ -1,12 +1,25 @@
-# Ignore local and training-only artifacts for Vercel deployments
+.git/
 .venv/
-__pycache__/
+venv/
+node_modules/
+**/node_modules/
+**/__pycache__/
 *.pyc
-
-# Legacy/training-only resources not required in production inference runtime
-ML_models/
-dataset/
-assets/
+.pytest_cache/
+.env*
+legacy/
+database/
 utils/
+dataset/
+ML_models/
+assets/
+body_explorer/
+tests/
+evaluation/
+docs/
+ml/train_ddxplus.py
+ml/ddxplus_data.py
+ml/evaluate.py
+ml/test_ddxplus.py
+requirements-train.txt
 train.py
-runtime.txt

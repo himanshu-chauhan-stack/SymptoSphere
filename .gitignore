@@ -137,12 +137,15 @@ celerybeat.pid
 # Environments
 .env
 .envrc
-.venv
-env/
+.venv/
 venv/
 ENV/
 env.bak/
 venv.bak/
+.pytest-basetemp/
+node_modules/
+coverage/
+dist/
 
 # Spyder project settings
 .spyderproject
@@ -194,6 +197,10 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+# Local QA and packaging artifacts
+*.log
+*.tmp
+
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
@@ -206,3 +213,13 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 .vercel
+
+# Generated development/staging resources. Built viewer + trusted inference artifact are committed.
+node_modules/
+**/node_modules/
+*.tsbuildinfo
+public/static/
+evaluation/browser/*.png
+tests/test-results/
+data_raw/
+training_work/
